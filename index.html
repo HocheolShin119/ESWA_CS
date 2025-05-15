@@ -199,42 +199,40 @@
     </div>
 
     <script>
-        function clearPlaceholder(element) {
-            if (element.classList.contains('placeholder')) {
-                element.value = "";
-                element.classList.remove('placeholder');
-            }
-        }
+    function calculateTime(start, end) {
+        if (!start || !end) return "-";
+        const [sh, sm] = start.split(":").map(Number);
+        const [eh, em] = end.split(":").map(Number);
+        let startDate = new Date(0, 0, 0, sh, sm);
+        let endDate = new Date(0, 0, 0, eh, em);
+        let diff = (endDate - startDate) / 60000;
+        if (diff < 0) diff += 1440;
+        const h = Math.floor(diff / 60);
+        const m = diff % 60;
+        return `${h}:${m.toString().padStart(2, '0')}`;
+    }
 
-        function generateReport() {
-            let startInspection = document.getElementById('startInspection').value;
-            let endInspection = document.getElementById('endInspection').value;
-            let startWork = document.getElementById('startWork').value;
-            let endWork = document.getElementById('endWork').value;
-            
-            function calculateTime(start, end) {
-                let startTime = new Date(`1970-01-01T${start}`);
-                let endTime = new Date(`1970-01-01T${end}`);
-                let diff = Math.abs(endTime - startTime) / 60000;
-                let hours = Math.floor(diff / 60);
-                let minutes = diff % 60;
-                return `${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
-            }
+    function generateReport() {
+        const machine = document.getElementById('machine').value;
+        const startWork = document.getElementById('startWork').value;
+        const endWork = document.getElementById('endWork').value;
+        const workDuration = calculateTime(startWork, endWork);
 
-            let report = `
-            <h3>설비 트러블 대응 보고 (${document.getElementById('responseCategory').value})</h3>
-            <p><strong>호기:</strong> ${document.getElementById('machine').value}-${document.getElementById('equipment').value}</p>
-            <p><strong>색지도 시간:</strong> ${startInspection} ~ ${endInspection} (소요시간: ${calculateTime(startInspection, endInspection)})</p>
-            <p><strong>작업 시간:</strong> ${startWork} ~ ${endWork} (소요시간: ${calculateTime(startWork, endWork)})</p>
-            <p><strong>설비부위:</strong> ${document.getElementById('equipmentPart').value}</p>
-            <p><strong>현상:</strong> ${document.getElementById('phenomenon').value}</p>
-            <p><strong>조치내용:</strong> ${document.getElementById('action').value}</p>
-            <p><strong>예상 원인:</strong> ${document.getElementById('cause').value}</p>
-            <p><strong>대응 방식:</strong> ${document.getElementById('responseType').value}</p>
-            `;
+        const startInspection = document.getElementById('startInspection').value;
+        const endInspection = document.getElementById('endInspection').value;
+        const inspectionDuration = calculateTime(startInspection, endInspection);
 
-            document.getElementById('output').innerHTML = report;
-        }
-    </script>
+        const equipmentPart = document.getElementById('equipmentPart').value;
+        const phenomenon = document.getElementById('phenomenon').value;
+        const action = document.getElementById('action').value;
+        const cause = document.getElementById('cause').value;
+        const responseType = document.getElementById('responseType').value;
+        const responseCategory = document.getElementById('responseCategory').value;
+
+        const report = `설비 트러블 부동 조치 대응보고(${responseCategory})\n\n1. 호기 : ${machine}\n2. 작업 시간 : ${startWork}~${endWork} (${workDuration})\n3. 색지도 시간 : ${startInspection}~${endInspection} (${inspectionDuration})\n4. 설비부위 : ${equipmentPart}\n5. 현상 : ${phenomenon}\n6. 조치내용 : \n${action}\n7. 예상원인 : ${cause}\n8. 대응 방식 : ${responseType}`;
+
+        document.getElementById("output").innerText = report;
+    }
+</script>
 </body>
 </html>
