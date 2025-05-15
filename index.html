@@ -229,7 +229,7 @@
         const responseType = document.getElementById('responseType').value;
         const responseCategory = document.getElementById('responseCategory').value;
 
-        const report = `설비 트러블 부동 조치 대응보고(${responseCategory})\n\n1. 호기 : ${machine}\n2. 작업 시간 : ${startWork}~${endWork} (${workDuration})\n3. 색지도 시간 : ${startInspection}~${endInspection} (${inspectionDuration})\n4. 설비부위 : ${equipmentPart}\n5. 현상 : ${phenomenon}\n6. 조치내용 : \n${action}\n7. 예상원인 : ${cause}\n8. 대응 방식 : ${responseType}`;
+        const report = `설비 트러블 부동 조치 대응보고(${responseCategory})\n\n호기 : ${machine}\n작업 시간 : ${startWork}~${endWork} (${workDuration})\n색지도 시간 : ${startInspection}~${endInspection} (${inspectionDuration})\n설비부위 : ${equipmentPart}\n현상 : ${phenomenon}\n조치내용 : \n${action}\n예상원인 : ${cause}\n대응 방식 : ${responseType}`;
 
         document.getElementById("output").innerText = report;
     }
