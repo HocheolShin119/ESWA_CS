@@ -212,10 +212,12 @@
             <button type="button" onclick="generateReport()">보고서 생성</button>
         </form>
 
-        <div class="button-group">
+       <div id="output"></div>
+
+<div class="button-group">
     <button onclick="copyToClipboard()">📋 복사하기</button>
     <a id="translateLink" href="#" target="_blank">
-        <button>🌐 영어로 번역 (구글 번역)</button>
+        <button type="button">🌐 영어로 번역 (구글 번역)</button>
     </a>
 </div>
 
@@ -261,6 +263,17 @@
 `대응 방식 : ${responseType}`;
         document.getElementById("output").innerText = report;
     }
+        const encoded = encodeURIComponent(report);
+const url = `https://translate.google.com/?sl=ko&tl=en&text=${encoded}&op=translate`;
+document.getElementById("translateLink").href = url;
+        function copyToClipboard() {
+    const text = document.getElementById("output").innerText;
+    navigator.clipboard.writeText(text).then(() => {
+        alert("보고서가 복사되었습니다.");
+    }).catch(err => {
+        alert("복사 실패: " + err);
+    });
+}
 </script>
 </body>
 </html>
