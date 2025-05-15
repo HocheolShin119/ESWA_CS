@@ -289,6 +289,95 @@ function openTranslation() {
 
     window.open(url, '_blank');
 }
+        const EQUIPMENT_DATA = {
+  MEB: {
+    Lamination: {
+      "전극Unwinder": ["Auto Splicing", "Roller Chuck", "Dancer", "Sensor", "단차Roller"],
+      "SEPAUnwinder": ["Auto Splicing", "Roller Chuck", "Dancer", "Sensor", "단차Roller", "Expander Roller(간센롤)"],
+      "합지부": ["EPC", "Feeding Roller", "Align Pre-Roller", "Merge Pre-Roller", "PET Unwinder", "Align Nip Roller", "Merge Nip Roller"],
+      "Lamination": ["Heater Zone", "Lami Roller", "Long Side Sealing"],
+      "FinalCutter": ["Dancer", "PET Rewinder", "Sepa Sealing", "Final Conveyor", "Vision Conveyor", "Laser Marking"],
+      "Inspection": ["Short Measure", "Sheet Conveyor", "Inspection Conveyor", "Vision Inspector", "Magazine 호퍼"],
+      "Unloading": ["OK Conveyor", "Magazine"],
+      "System": ["UMAC", "PLC", "PC"],
+      "Cutter": ["Upper Cutter", "Center Cutter", "Final Cutter"]
+    },
+    Stacking: {
+      "Stack유닛": ["Vaccum Conveyor", "Cell Loader", "Align Unit", "Stack Table", "Cell Gripper", "Vision Inspector", "Magazine"],
+      "Tapping": ["Loader", "Half Cell Unit", "SCARA Robot", "Vision", "LMS", "Tapping Unit", "Laser Marking", "Unloader"],
+      "Inspection": ["Loader", "Vision Index Scan", "Short Measure", "Reverse(반전기)", "OK Conveyor", "Cut P&P"],
+      "Unloading": ["Unloading", "Tray"],
+      "System": ["UMAC", "PLC", "PC"]
+    }
+  },
+  NOR: {
+    Lamination: {
+      "전극Unwinder": ["Auto Splicing", "Roller Chuck", "Dancer", "Sensor", "단차Roller"],
+      "SEPAUnwinder": ["Auto Splicing", "Roller Chuck", "Dancer", "Sensor", "단차Roller", "Expander Roller(간센롤)"],
+      "합지부": ["EPC", "Feeding Conveyor", "Align Pre-Roller", "Merge Pre-Roller", "PET Unwinder", "Align Nip Roller", "Merge Nip Roller"],
+      "Lamination": ["Heater Zone", "Lami Roller", "Long Side Sealing"],
+      "FinalCutter": ["Dancer", "PET Rewinder", "Sepa Sealing", "Final Conveyor", "Vision Conveyor", "Laser Marking"],
+      "Inspection": ["Short Measure", "Short Conveyor", "Miss Matching 비전", "Vision Inspector", "Magazine 호퍼"],
+      "Unloading": ["OK Conveyor", "Magazine"],
+      "System": ["UMAC", "PLC", "PC"],
+      "Cutter": ["Upper Cutter", "Center Cutter", "Final Cutter"]
+    },
+    Stacking: {
+      "Stack유닛": ["Vaccum Conveyor", "Quatro Robot", "Align Unit", "Stack Table", "Cell Gripper", "Vision Inspector", "Magazine"],
+      "Tapping": ["Loader", "Half Cell Unit", "SCARA Robot", "Vision", "LMS", "Tapping Unit", "Laser Marking", "Unloader"],
+      "Inspection": ["Loader", "Vision Line Scan", "Weight Measure", "Short Measure", "Reverse(반전기)", "Out P&P"],
+      "Unloading": ["Unloading", "Tray"],
+      "System": ["UMAC", "PLC", "PC"]
+    }
+  }
+};
+
+const machineSelect = document.getElementById('machine');
+const level1 = document.getElementById('equipLevel1');
+const level2 = document.getElementById('equipLevel2');
+const level3 = document.getElementById('equipLevel3');
+const equipHidden = document.getElementById('equipmentPart');
+
+machineSelect.addEventListener('change', () => {
+  const val = machineSelect.value.split('-')[0];
+  const line = ['4', '10', '13', '14', '20', '21', '22', '23', '24'].includes(val) ? 'MEB' : 'NOR';
+  populate(level1, Object.keys(EQUIPMENT_DATA[line]));
+  level2.innerHTML = '<option>선택</option>';
+  level3.innerHTML = '<option>선택</option>';
+  level1.dataset.line = line;
+});
+
+level1.addEventListener('change', () => {
+  const line = level1.dataset.line;
+  const selected = level1.value;
+  if (selected && EQUIPMENT_DATA[line][selected]) {
+    populate(level2, Object.keys(EQUIPMENT_DATA[line][selected]));
+  }
+  level3.innerHTML = '<option>선택</option>';
+});
+
+level2.addEventListener('change', () => {
+  const line = level1.dataset.line;
+  const cat1 = level1.value;
+  const cat2 = level2.value;
+  if (EQUIPMENT_DATA[line][cat1] && EQUIPMENT_DATA[line][cat1][cat2]) {
+    populate(level3, EQUIPMENT_DATA[line][cat1][cat2]);
+  }
+});
+
+level3.addEventListener('change', () => {
+  equipHidden.value = `${level1.value} > ${level2.value} > ${level3.value}`;
+});
+
+function populate(select, list) {
+  select.innerHTML = '';
+  for (const item of list) {
+    const opt = document.createElement('option');
+    opt.text = item;
+    opt.value = item;
+    select.appendChild(opt);
+  }
+}
 </script>
 </body>
 </html>
