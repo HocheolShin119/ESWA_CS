@@ -250,6 +250,8 @@
         const endInspection = document.getElementById('endInspection').value;
         const inspectionDuration = calculateTime(startInspection, endInspection);
 
+        document.getElementById("equipmentPart").value =
+    `${level1.value} > ${level2.value} > ${level3.value}`;
         const equipmentPart = document.getElementById('equipmentPart').value;
         const phenomenon = document.getElementById('phenomenon').value;
         const action = document.getElementById('action').value;
