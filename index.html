@@ -343,6 +343,7 @@ const equipHidden = document.getElementById('equipmentPart');
 machineSelect.addEventListener('change', () => {
   const val = machineSelect.value.split('-')[0];
   const line = ['4', '10', '13', '14', '20', '21', '22', '23', '24'].includes(val) ? 'MEB' : 'NOR';
+  level1.innerHTML = '<option value="">선택</option>';
   populate(level1, Object.keys(EQUIPMENT_DATA[line]));
   level2.innerHTML = '<option>선택</option>';
   level3.innerHTML = '<option>선택</option>';
