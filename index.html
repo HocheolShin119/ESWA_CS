@@ -373,7 +373,8 @@ level3.addEventListener('change', () => {
 });
 
 function populate(select, list) {
-  select.innerHTML = '';
+   select.innerHTML = '<option value="">선택</option>'; // 항상 첫 항목은 '선택'
+
   for (const item of list) {
     const opt = document.createElement('option');
     opt.text = item;
