@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>ESWA 설비 트러블 조치 양식</title>
+  <script>
+    function calculateDuration(start, end) {
+      const [startH, startM] = start.split(":").map(Number);
+      const [endH, endM] = end.split(":").map(Number);
+      let startMinutes = startH * 60 + startM;
+      let endMinutes = endH * 60 + endM;
+      if (endMinutes < startMinutes) endMinutes += 1440;
+      const duration = endMinutes - startMinutes;
+      const hours = String(Math.floor(duration / 60)).padStart(2, '0');
+      const minutes = String(duration % 60).padStart(2, '0');
+      return hours + ':' + minutes;
+    }
+
+    async function handleSubmit(event) {
+      event.preventDefault();
+      const unit = document.getElementById('unit').value;
+      const colorStart = document.getElementById('colorStart').value;
+      const colorEnd = document.getElementById('colorEnd').value;
+      const workStart = document.getElementById('workStart').value;
+      const workEnd = document.getElementById('workEnd').value;
+      const part = document.getElementById('part').value;
+      const phenomenon = document.getElementById('phenomenon').value;
+      const action = document.getElementById('action').value;
+      const cause = document.getElementById('cause').value;
+      const method = document.getElementById('method').value;
+      const category = document.getElementById('category').value;
+
+      const colorDuration = calculateDuration(colorStart, colorEnd);
+      const workDuration = calculateDuration(workStart, workEnd);
+
+      const koreanOutput =
+        '설비 트러블 부동 조치 (' + category + ')\n' +
+        '1.호기 : ' + unit + '\n' +
+        '2.작업시간 : ' + workStart + '~' + workEnd + ' (' + workDuration + ')\n' +
+        '3.색지도 시간 : ' + colorStart + '~' + colorEnd + ' (' + colorDuration + ')\n' +
+        '4.설비부위 : ' + part + '\n' +
+        '5.현상 : ' + phenomenon + '\n' +
+        '6.조치 내용 :\n' + action + '\n' +
+        '7.예상원인 : ' + cause + '\n' +
+        '8.대응 방식 : ' + method;
+
+      const textToTranslate =
+        'Unit: ' + unit + '\n' +
+        'Work time: ' + workStart + '~' + workEnd + ' (' + workDuration + ')\n' +
+        'Color map time: ' + colorStart + '~' + colorEnd + ' (' + colorDuration + ')\n' +
+        'Equipment part: ' + part + '\n' +
+        'Phenomenon: ' + phenomenon + '\n' +
+        'Measures:\n' + action + '\n' +
+        'Expected cause: ' + cause + '\n' +
+        'Response method: ' + method;
+
+      // LibreTranslate API 호출
+      const res = await fetch("https://libretranslate.com/translate", {
+        method: "POST",
+        body: JSON.stringify({
+          q: textToTranslate,
+          source: "ko",
+          target: "en",
+          format: "text"
+        }),
+        headers: { "Content-Type": "application/json" }
+      });
+
+      let translated = "";
+      try {
+        const result = await res.json();
+        translated = result.translatedText;
+      } catch (e) {
+        translated = "[번역 실패] 자동 번역 서버 응답 없음";
+      }
+
+      const translateURL = 'https://translate.google.com/?sl=ko&tl=en&text=' + encodeURIComponent(textToTranslate) + '&op=translate';
+
+      const englishOutput = '\n\n[자동 번역 결과]\n' + translated;
+      const noticeText = '\n\n---\n영어 번역은 자동 번역 시스템에 의해 생성되었으며, 일부 부정확할 수 있습니다. 정확한 의미 확인이 필요할 경우 아래의 링크에서 직접 확인바랍니다:\n👉 ' + translateURL;
+
+      document.getElementById('result').textContent = koreanOutput + englishOutput + noticeText;
+    }
+  
+    async function loadEquipmentData() {
+      const response = await fetch('equipment_structure_full.json');
+      const equipmentData = await response.json();
+      window.equipmentData = equipmentData;
+      populateCategoryDropdown(Object.keys(equipmentData.equipment_structure));
+    }
+
+    function onCategoryChange() {
+      const category = document.getElementById("category").value;
+      const subSelect = document.getElementById("subcategory");
+      subSelect.innerHTML = '<option disabled selected>중분류 선택</option>';
+      const subcategories = Object.keys(window.equipmentData.equipment_structure[category]);
+      subcategories.forEach(sub => {
+        const option = document.createElement('option');
+        option.value = sub;
+        option.text = sub;
+        subSelect.appendChild(option);
+      });
+      document.getElementById("part").innerHTML = '<option disabled selected>소분류 선택</option>';
+    }
+
+    function onSubcategoryChange() {
+      const cat = document.getElementById("category").value;
+      const sub = document.getElementById("subcategory").value;
+      const items = window.equipmentData.equipment_structure[cat][sub];
+      const detailSelect = document.getElementById("part");
+      detailSelect.innerHTML = '<option disabled selected>소분류 선택</option>';
+      items.forEach(i => {
+        const option = document.createElement('option');
+        option.value = i;
+        option.text = i;
+        detailSelect.appendChild(option);
+      });
+    }
+
+    window.onload = loadEquipmentData;
+
+</script>
+</head>
+<body>
+  <h2>ESWA 설비 트러블 부동 조치 양식</h2>
+  <form onsubmit="handleSubmit(event)">
+    <label>호기:
+      <select id="unit" required>
+        <option value='#1-1'>#1-1</option><option value='#1-2'>#1-2</option><option value='#1-3'>#1-3</option><option value='#1-4'>#1-4</option><option value='#2-1'>#2-1</option><option value='#2-2'>#2-2</option><option value='#2-3'>#2-3</option><option value='#2-4'>#2-4</option><option value='#3-1'>#3-1</option><option value='#3-2'>#3-2</option><option value='#3-3'>#3-3</option><option value='#3-4'>#3-4</option><option value='#4-1'>#4-1</option><option value='#4-2'>#4-2</option><option value='#4-3'>#4-3</option><option value='#4-4'>#4-4</option><option value='#5-1'>#5-1</option><option value='#5-2'>#5-2</option><option value='#5-3'>#5-3</option><option value='#5-4'>#5-4</option><option value='#6-1'>#6-1</option><option value='#6-2'>#6-2</option><option value='#6-3'>#6-3</option><option value='#6-4'>#6-4</option><option value='#7-1'>#7-1</option><option value='#7-2'>#7-2</option><option value='#7-3'>#7-3</option><option value='#7-4'>#7-4</option><option value='#8-1'>#8-1</option><option value='#8-2'>#8-2</option><option value='#8-3'>#8-3</option><option value='#8-4'>#8-4</option><option value='#9-1'>#9-1</option><option value='#9-2'>#9-2</option><option value='#9-3'>#9-3</option><option value='#9-4'>#9-4</option><option value='#10-1'>#10-1</option><option value='#10-2'>#10-2</option><option value='#10-3'>#10-3</option><option value='#11-1'>#11-1</option><option value='#11-2'>#11-2</option><option value='#11-3'>#11-3</option><option value='#12-1'>#12-1</option><option value='#12-2'>#12-2</option><option value='#12-3'>#12-3</option><option value='#13-1'>#13-1</option><option value='#13-2'>#13-2</option><option value='#13-3'>#13-3</option><option value='#14-1'>#14-1</option><option value='#14-2'>#14-2</option><option value='#14-3'>#14-3</option><option value='#15-1'>#15-1</option><option value='#15-2'>#15-2</option><option value='#15-3'>#15-3</option><option value='#16-1'>#16-1</option><option value='#16-2'>#16-2</option><option value='#16-3'>#16-3</option><option value='#17-1'>#17-1</option><option value='#17-2'>#17-2</option><option value='#17-3'>#17-3</option><option value='#18-1'>#18-1</option><option value='#18-2'>#18-2</option><option value='#18-3'>#18-3</option><option value='#19-1'>#19-1</option><option value='#19-2'>#19-2</option><option value='#19-3'>#19-3</option><option value='#20-1'>#20-1</option><option value='#20-2'>#20-2</option><option value='#20-3'>#20-3</option><option value='#21-1'>#21-1</option><option value='#21-2'>#21-2</option><option value='#21-3'>#21-3</option><option value='#22-1'>#22-1</option><option value='#22-2'>#22-2</option><option value='#22-3'>#22-3</option><option value='#23-1'>#23-1</option><option value='#23-2'>#23-2</option><option value='#23-3'>#23-3</option><option value='#24-1'>#24-1</option><option value='#24-2'>#24-2</option><option value='#24-3'>#24-3</option>
+      </select>
+    </label><br><br>
+    <label>작업 시작 시간: <input type="time" id="workStart" required></label><br>
+    <label>작업 종료 시간: <input type="time" id="workEnd" required></label><br><br>
+    <label>색지도 시작 시간: <input type="time" id="colorStart" required></label><br>
+    <label>색지도 종료 시간: <input type="time" id="colorEnd" required></label><br><br>
+    
+<label>설비부위 대분류:
+  <select id="category" onchange="onCategoryChange()" required>
+    <option disabled selected>대분류 선택</option>
+  </select>
+</label><br>
+<label>설비부위 중분류:
+  <select id="subcategory" onchange="onSubcategoryChange()" required>
+    <option disabled selected>중분류 선택</option>
+  </select>
+</label><br>
+<label>설비부위 소분류:
+  <select id="part" required>
+    <option disabled selected>소분류 선택</option>
+  </select>
+</label><br>
+
+    <label>현상: <input id="phenomenon" required></label><br><br>
+    <label>조치 내용:<br><textarea id="action" rows="6" cols="60" required></textarea></label><br><br>
+    <label>예상원인: <input id="cause" required></label><br><br>
+    <label>대응 방식:
+      <select id="method" required>
+        <option value='CS'>CS</option>
+        <option value='CS/PDT'>CS/PDT</option>
+        <option value='CS/Tech'>CS/Tech</option>
+        <option value='CS/Eng'>CS/Eng</option>
+      </select>
+    </label><br><br>
+    <label>대응 분류 (괄호안 표기):
+      <select id="category" required>
+        <option value='Nine Tech'>Nine Tech</option>
+        <option value='Shinjin'>Shinjin</option>
+        <option value='OST'>OST</option>
+      </select>
+    </label><br><br>
+    <button type="submit">양식 생성</button>
+  </form>
+  <h3>결과 출력:</h3>
+  <pre id="result"></pre>
+</body>
+</html>
