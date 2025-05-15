@@ -3,64 +3,69 @@
 <head>
     <title>설비 트러블 부동 조치 대응보고</title>
     <style>
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f9f9f9;
-        margin: 0;
-        padding: 0;
-    }
-    .container {
-        max-width: 600px;
-        margin: 2rem auto;
-        background: white;
-        padding: 2rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    h2 {
-        text-align: center;
-        color: #333;
-    }
-    label {
-        display: block;
-        margin-top: 1rem;
-        font-weight: bold;
-        color: #333;
-    }
-    input, select, textarea {
-        width: 100%;
-        padding: 0.75rem;
-        margin-top: 0.3rem;
-        font-size: 1rem;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-        box-sizing: border-box;
-    }
-    textarea::placeholder {
-        white-space: pre-line;
-        color: gray;
-    }
-    button {
-        margin-top: 1.5rem;
-        width: 100%;
-        padding: 0.75rem;
-        background-color: #007BFF;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-size: 1rem;
-        cursor: pointer;
-    }
-    button:hover {
-        background-color: #0056b3;
-    }
-    #output {
-        margin-top: 2rem;
-        background: #f0f0f0;
-        padding: 1rem;
-        border-radius: 8px;
-    }
-</style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 100%;
+            width: 90%;
+            margin: 2rem auto;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            font-size: 1.5rem;
+        }
+        label {
+            display: block;
+            margin-top: 1rem;
+            font-weight: bold;
+            color: #333;
+            font-size: 0.95rem;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            margin-top: 0.3rem;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        textarea::placeholder {
+            white-space: pre-line;
+            color: gray;
+        }
+        button {
+            margin-top: 1.5rem;
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #output {
+            margin-top: 2rem;
+            background: #f0f0f0;
+            padding: 1rem;
+            border-radius: 8px;
+            white-space: pre-line;
+            font-size: 0.95rem;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
