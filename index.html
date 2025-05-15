@@ -3,13 +3,64 @@
 <head>
     <title>설비 트러블 대응 보고</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        .container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; }
-        label { display: block; margin-top: 10px; }
-        input, select, textarea { width: 100%; padding: 5px; }
-        button { margin-top: 10px; padding: 10px; background-color: blue; color: white; border: none; cursor: pointer; }
-        .placeholder { color: gray; }
-    </style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        max-width: 600px;
+        margin: 2rem auto;
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h2 {
+        text-align: center;
+        color: #333;
+    }
+    label {
+        display: block;
+        margin-top: 1rem;
+        font-weight: bold;
+        color: #333;
+    }
+    input, select, textarea {
+        width: 100%;
+        padding: 0.75rem;
+        margin-top: 0.3rem;
+        font-size: 1rem;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+    }
+    textarea::placeholder {
+        white-space: pre-line;
+        color: gray;
+    }
+    button {
+        margin-top: 1.5rem;
+        width: 100%;
+        padding: 0.75rem;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #0056b3;
+    }
+    #output {
+        margin-top: 2rem;
+        background: #f0f0f0;
+        padding: 1rem;
+        border-radius: 8px;
+    }
+</style>
 </head>
 <body>
     <div class="container">
@@ -108,17 +159,21 @@
 
             <label>설비부위: <input type="text" id="equipmentPart"></label>
 
-            <label>현상: 
-                <textarea id="phenomenon" class="placeholder" onfocus="clearPlaceholder(this)">예) 1. 얼라인 그리퍼 동작이상\n 2. 얼라인 그리퍼 Z축 리미트 에러</textarea>
-            </label>
+           <label>현상:
+    <textarea id="phenomenon" placeholder="1. 얼라인 그리퍼 동작이상
+2. 얼라인 그리퍼 Z축 리미트 에러"></textarea>
+</label>
 
-            <label>조치내용: 
-                <textarea id="action" class="placeholder" onfocus="clearPlaceholder(this)">예) 1. 이상 소음 발생 구동부 점검\n 2. 구동부 탈거 및 마모 상태 확인\n 3. 부품 이상 확인후 교체</textarea>
-            </label>
+<label>조치내용:
+    <textarea id="action" placeholder="1. 이상 소음 발생 구동부 점검
+2. 구동부 탈거 및 마모 상태 확인
+3. 부품 이상 확인후 교체"></textarea>
+</label>
 
-            <label>예상 원인: 
-                <textarea id="cause" class="placeholder" onfocus="clearPlaceholder(this)">예) 1. 예상 원인\n 2. 예상 원인</textarea>
-            </label>
+<label>예상 원인:
+    <textarea id="cause" placeholder="1. 예상 원인
+2. 예상 원인"></textarea>
+</label>
 
             <label>대응 방식:
                 <select id="responseType">
