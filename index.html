@@ -6,36 +6,120 @@
         body { font-family: Arial, sans-serif; }
         .container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; }
         label { display: block; margin-top: 10px; }
-        input, textarea { width: 100%; padding: 5px; }
+        input, select, textarea { width: 100%; padding: 5px; }
         button { margin-top: 10px; padding: 10px; background-color: blue; color: white; border: none; cursor: pointer; }
+        .placeholder { color: gray; }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>설비 트러블 대응 보고</h2>
         <form id="reportForm">
-            <label>호기: <input type="text" id="machine"></label>
-            <label>색지도 시간: <input type="text" id="inspectionTime"></label>
-            <label>작업 시간: <input type="text" id="workTime"></label>
+            <label>호기:
+                <select id="machine">
+                    <optgroup label="NOR 라인">
+                        <option value="1">#1</option>
+                        <option value="2">#2</option>
+                        <option value="8">#8</option>
+                        <option value="12">#12</option>
+                        <!-- 추가 옵션 -->
+                    </optgroup>
+                    <optgroup label="MEB 라인">
+                        <option value="10">#10</option>
+                        <option value="13">#13</option>
+                        <option value="22">#22</option>
+                        <!-- 추가 옵션 -->
+                    </optgroup>
+                </select>
+            </label>
+
+            <label>설비 선택:
+                <select id="equipment">
+                    <option value="1">-1</option>
+                    <option value="2">-2</option>
+                    <option value="3">-3</option>
+                    <option value="0">-0 (해당 호기만)</option>
+                </select>
+            </label>
+
+            <label>색지도 시작 시간: <input type="time" id="startInspection"></label>
+            <label>색지도 종료 시간: <input type="time" id="endInspection"></label>
+
+            <label>작업 시작 시간: <input type="time" id="startWork"></label>
+            <label>작업 종료 시간: <input type="time" id="endWork"></label>
+
             <label>설비부위: <input type="text" id="equipmentPart"></label>
-            <label>현상: <input type="text" id="phenomenon"></label>
-            <label>조치내용: <textarea id="action"></textarea></label>
+
+            <label>현상: 
+                <textarea id="phenomenon" class="placeholder" onfocus="clearPlaceholder(this)">예) 1. 얼라인 그리퍼 동작이상\n 2. 얼라인 그리퍼 Z축 리미트 에러</textarea>
+            </label>
+
+            <label>조치내용: 
+                <textarea id="action" class="placeholder" onfocus="clearPlaceholder(this)">예) 1. 이상 소음 발생 구동부 점검\n 2. 구동부 탈거 및 마모 상태 확인\n 3. 부품 이상 확인후 교체</textarea>
+            </label>
+
+            <label>예상 원인: 
+                <textarea id="cause" class="placeholder" onfocus="clearPlaceholder(this)">예) 1. 예상 원인\n 2. 예상 원인</textarea>
+            </label>
+
+            <label>대응 방식:
+                <select id="responseType">
+                    <option value="CS">CS</option>
+                    <option value="CS/PDT">CS/PDT</option>
+                    <option value="CS/Tech">CS/Tech</option>
+                    <option value="CS/Eng">CS/Eng</option>
+                </select>
+            </label>
+
+            <label>대응 분류:
+                <select id="responseCategory">
+                    <option value="Nain Tech">Nain Tech</option>
+                    <option value="Shinjin">Shinjin</option>
+                    <option value="OST">OST</option>
+                </select>
+            </label>
+
             <button type="button" onclick="generateReport()">보고서 생성</button>
         </form>
+
         <div id="output"></div>
     </div>
 
     <script>
+        function clearPlaceholder(element) {
+            if (element.classList.contains('placeholder')) {
+                element.value = "";
+                element.classList.remove('placeholder');
+            }
+        }
+
         function generateReport() {
+            let startInspection = document.getElementById('startInspection').value;
+            let endInspection = document.getElementById('endInspection').value;
+            let startWork = document.getElementById('startWork').value;
+            let endWork = document.getElementById('endWork').value;
+            
+            function calculateTime(start, end) {
+                let startTime = new Date(`1970-01-01T${start}`);
+                let endTime = new Date(`1970-01-01T${end}`);
+                let diff = Math.abs(endTime - startTime) / 60000;
+                let hours = Math.floor(diff / 60);
+                let minutes = diff % 60;
+                return `${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
+            }
+
             let report = `
-            <h3>설비 트러블 대응 보고</h3>
-            <p><strong>호기:</strong> ${document.getElementById('machine').value}</p>
-            <p><strong>색지도 시간:</strong> ${document.getElementById('inspectionTime').value}</p>
-            <p><strong>작업 시간:</strong> ${document.getElementById('workTime').value}</p>
+            <h3>설비 트러블 대응 보고 (${document.getElementById('responseCategory').value})</h3>
+            <p><strong>호기:</strong> ${document.getElementById('machine').value}-${document.getElementById('equipment').value}</p>
+            <p><strong>색지도 시간:</strong> ${startInspection} ~ ${endInspection} (소요시간: ${calculateTime(startInspection, endInspection)})</p>
+            <p><strong>작업 시간:</strong> ${startWork} ~ ${endWork} (소요시간: ${calculateTime(startWork, endWork)})</p>
             <p><strong>설비부위:</strong> ${document.getElementById('equipmentPart').value}</p>
             <p><strong>현상:</strong> ${document.getElementById('phenomenon').value}</p>
             <p><strong>조치내용:</strong> ${document.getElementById('action').value}</p>
+            <p><strong>예상 원인:</strong> ${document.getElementById('cause').value}</p>
+            <p><strong>대응 방식:</strong> ${document.getElementById('responseType').value}</p>
             `;
+
             document.getElementById('output').innerHTML = report;
         }
     </script>
