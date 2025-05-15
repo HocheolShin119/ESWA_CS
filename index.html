@@ -174,7 +174,14 @@
             <label>작업 시작 시간: <input type="time" id="startWork"></label>
             <label>작업 종료 시간: <input type="time" id="endWork"></label>
 
-            <label>설비부위: <input type="text" id="equipmentPart"></label>
+            <label>설비부위:
+  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+    <select id="equipLevel1"></select>
+    <select id="equipLevel2"></select>
+    <select id="equipLevel3"></select>
+  </div>
+</label>
+<input type="hidden" id="equipmentPart">
 
            <label>현상:
     <textarea id="phenomenon" placeholder="1. 얼라인 그리퍼 동작이상
