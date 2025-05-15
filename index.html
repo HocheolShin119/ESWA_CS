@@ -378,6 +378,10 @@ function populate(select, list) {
     select.appendChild(opt);
   }
 }
+
+        window.addEventListener('DOMContentLoaded', () => {
+  machineSelect.dispatchEvent(new Event('change'));
+});
 </script>
 </body>
 </html>
